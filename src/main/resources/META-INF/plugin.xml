@@ -61,6 +61,14 @@
         <liveTemplateContext
                 contextId="NOIR"
                 implementation="com.ohaddahan.noir.NoirTemplateContextType"/>
+
+        <codeInsight.lineMarkerProvider
+                language="Noir"
+                implementationClass="com.ohaddahan.noir.NoirTestLineMarkerProvider"/>
+
+        <virtualFileSystem
+                key="noir-std"
+                implementationClass="com.ohaddahan.noir.stdlib.NoirStdlibFileSystem"/>
     </extensions>
 
     <actions>
@@ -74,6 +82,10 @@
                     class="com.ohaddahan.noir.actions.ExpandMacrosAction"
                     text="Expand Macros"
                     description="Expand macros in current Noir file"/>
+            <action id="Noir.BrowseStdlib"
+                    class="com.ohaddahan.noir.actions.BrowseStdlibAction"
+                    text="Browse Standard Library"
+                    description="Open Noir standard library source"/>
         </group>
     </actions>
 </idea-plugin>

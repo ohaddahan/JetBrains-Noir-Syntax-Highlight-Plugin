@@ -1,8 +1,8 @@
 # Noir JetBrains Plugin - TODO
 
-## Status: v0.1.0 Released
+## Status: v0.1.0 Complete
 
-The core plugin is complete and ready for use.
+The plugin is feature-complete and ready for JetBrains Marketplace submission.
 
 ## Completed Features
 
@@ -12,6 +12,13 @@ The core plugin is complete and ready for use.
 - [x] Plugin icons (noir.svg, test.svg)
 - [x] Comment toggling (`//` and `/* */`)
 - [x] Bracket matching
+
+### Syntax Highlighting
+- [x] Native lexer (NoirLexer.kt)
+- [x] Token types and syntax highlighter
+- [x] Keywords, types, strings, comments, numbers, attributes
+- [x] Boolean literals
+- [x] Nested block comments
 
 ### LSP Integration
 - [x] LSP client connecting to `nargo lsp`
@@ -42,33 +49,42 @@ The core plugin is complete and ready for use.
 ### Actions
 - [x] Restart Language Server (Tools → Noir → Restart Language Server)
 - [x] Expand Macros (Tools → Noir → Expand Macros)
+- [x] Browse Standard Library (Tools → Noir → Browse Standard Library)
+
+### Gutter Icons
+- [x] Test indicator icons for `#[test]` functions
+
+### Stdlib Viewer
+- [x] Virtual file system for `noir-std://` URIs
+- [x] Auto-detection of stdlib location from nargo installation
+- [x] Browse Standard Library action
+
+### Testing
+- [x] Unit tests for file type recognition
+- [x] Unit tests for lexer tokenization
+- [x] Unit tests for settings persistence
 
 ### Documentation & CI/CD
-- [x] README.md
+- [x] README.md with full documentation
+- [x] DEV.md with implementation details
 - [x] CHANGELOG.md
 - [x] LICENSE (MIT)
 - [x] GitHub Actions workflows (build, release)
 
-### Syntax Highlighting
-- [x] Native lexer (NoirLexer.kt)
-- [x] Token types and syntax highlighter
-- [x] Keywords, types, strings, comments, numbers, attributes
+## Remaining Tasks
 
-## Future Enhancements
+### Marketplace Submission
+- [ ] Submit to JetBrains Marketplace
+- [ ] Add screenshots to marketplace listing
+- [ ] Set up plugin signing (optional, for verified publisher badge)
 
-### Stdlib Viewer
-- [ ] Virtual file system for `noir-std://` URIs
-- [ ] Navigate to stdlib source code
+## Future Enhancements (Post v0.1.0)
 
-### Gutter Icons
-- [ ] Test indicator icons for `#[test]` functions
-- [ ] Icon already created (test.svg)
-
-### Testing
-- [ ] Unit tests for file type recognition
-- [ ] Unit tests for settings persistence
-
-### Marketplace
-- [ ] JetBrains Marketplace submission
-- [ ] Plugin signing setup
-- [ ] Screenshots for marketplace listing
+### Potential Features
+- [ ] Run test action from gutter icon
+- [ ] Nargo.toml support (project configuration)
+- [ ] Code folding for functions, structs, modules
+- [ ] Structure view for file outline
+- [ ] Find usages across project
+- [ ] Rename refactoring support
+- [ ] Custom color scheme options

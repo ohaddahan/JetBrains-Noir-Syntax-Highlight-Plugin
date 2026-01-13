@@ -1,8 +1,6 @@
 # Noir JetBrains Plugin
 
 ![Build](https://github.com/ohaddahan/JetBrains-Noir-Syntax-Highlight-Plugin/workflows/Build/badge.svg)
-[![Version](https://img.shields.io/jetbrains/plugin/v/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
-[![Downloads](https://img.shields.io/jetbrains/plugin/d/MARKETPLACE_ID.svg)](https://plugins.jetbrains.com/plugin/MARKETPLACE_ID)
 
 Language support for the [Noir](https://noir-lang.org/) zero-knowledge programming language in JetBrains IDEs.
 
@@ -10,14 +8,26 @@ Language support for the [Noir](https://noir-lang.org/) zero-knowledge programmi
 Language support for the Noir zero-knowledge programming language.
 
 ### Features
+- Native syntax highlighting for .nr files
 - LSP integration with `nargo lsp` for full IDE intelligence
 - Code completion, diagnostics, go-to-definition, hover, and more
 - Live templates for common Noir constructs
+- Gutter icons for test functions
 - Macro expansion viewer
+- Standard library browser
 - Comment toggling and bracket matching
 <!-- Plugin description end -->
 
 ## Features
+
+### Syntax Highlighting
+Native syntax highlighting for Noir source files:
+- Keywords (`fn`, `struct`, `if`, `else`, `for`, etc.)
+- Types (`u8`, `u32`, `Field`, `bool`, etc.)
+- Strings (regular, raw `r#""#`, f-strings `f""`)
+- Comments (line `//` and block `/* */`)
+- Numeric literals (decimal, hex)
+- Attributes (`#[...]`)
 
 ### LSP Integration
 The plugin connects to `nargo lsp` to provide:
@@ -48,10 +58,14 @@ Type these prefixes and press Tab to expand:
 | `letfor` | Array comprehension |
 | `letforin` | Array comprehension with index |
 
+### Gutter Icons
+- Test tube icon appears next to `#[test]` functions
+
 ### Actions
 Available in **Tools → Noir** menu:
 - **Restart Language Server** - Restart the LSP connection
 - **Expand Macros** - Run `nargo expand` and view result in scratch file
+- **Browse Standard Library** - Open Noir stdlib source
 
 ## Requirements
 
@@ -141,6 +155,7 @@ src/main/
 │   ├── NoirCommenter.kt         # Comment toggling
 │   ├── NoirBraceMatcher.kt      # Bracket matching
 │   ├── NoirTemplateContextType.kt
+│   ├── NoirTestLineMarkerProvider.kt  # Test gutter icons
 │   ├── lsp/
 │   │   ├── NoirLspServerDescriptor.kt
 │   │   └── NoirLspServerSupportProvider.kt
@@ -148,13 +163,22 @@ src/main/
 │   │   ├── NoirSettings.kt
 │   │   ├── NoirProjectSettings.kt
 │   │   └── NoirSettingsConfigurable.kt
+│   ├── stdlib/
+│   │   ├── NoirStdlibFileSystem.kt
+│   │   └── NoirStdlibVirtualFile.kt
 │   └── actions/
 │       ├── RestartLspAction.kt
-│       └── ExpandMacrosAction.kt
-└── resources/
-    ├── META-INF/plugin.xml      # Plugin configuration
-    ├── liveTemplates/Noir.xml   # Live templates
-    └── icons/                   # SVG icons
+│       ├── ExpandMacrosAction.kt
+│       └── BrowseStdlibAction.kt
+├── resources/
+│   ├── META-INF/plugin.xml      # Plugin configuration
+│   ├── liveTemplates/Noir.xml   # Live templates
+│   └── icons/                   # SVG icons
+└── test/
+    └── kotlin/com/ohaddahan/noir/
+        ├── NoirFileTypeTest.kt  # File type tests
+        ├── NoirLexerTest.kt     # Lexer tests
+        └── NoirSettingsTest.kt  # Settings tests
 ```
 
 ## Troubleshooting

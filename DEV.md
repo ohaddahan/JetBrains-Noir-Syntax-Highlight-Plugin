@@ -12,12 +12,16 @@ The plugin follows the standard JetBrains plugin architecture:
 ├─────────────────────────────────────────────────────────────┤
 │  Plugin Components                                          │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │   Language   │  │     LSP      │  │   Settings   │      │
-│  │  Definition  │  │  Integration │  │     UI       │      │
+│  │   Language   │  │   Syntax     │  │   Settings   │      │
+│  │  Definition  │  │ Highlighting │  │     UI       │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
 │  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
-│  │    Live      │  │   Actions    │  │    Icons     │      │
-│  │  Templates   │  │              │  │              │      │
+│  │     LSP      │  │    Live      │  │   Actions    │      │
+│  │  Integration │  │  Templates   │  │              │      │
+│  └──────────────┘  └──────────────┘  └──────────────┘      │
+│  ┌──────────────┐  ┌──────────────┐  ┌──────────────┐      │
+│  │   Gutter     │  │   Stdlib     │  │    Icons     │      │
+│  │    Icons     │  │   Viewer     │  │              │      │
 │  └──────────────┘  └──────────────┘  └──────────────┘      │
 ├─────────────────────────────────────────────────────────────┤
 │                    nargo lsp (external)                     │
@@ -50,23 +54,34 @@ object NoirFileType : LanguageFileType(NoirLanguage)
 
 ### Syntax Highlighting
 
-The plugin uses a native JetBrains lexer and syntax highlighter for reliable highlighting that works across all IDE versions.
+The plugin uses a native JetBrains lexer and syntax highlighter for reliable highlighting that works across all IDE versions without external dependencies.
 
 #### `NoirLexer.kt`
 Custom lexer that tokenizes Noir source code:
-- Keywords (`fn`, `struct`, `if`, `else`, etc.)
+- Keywords (`fn`, `struct`, `if`, `else`, `for`, `loop`, `while`, `match`, etc.)
 - Types (`u8`, `u32`, `Field`, `bool`, etc.)
 - Comments (line `//` and block `/* */` with nesting support)
 - Strings (regular, raw `r#""#`, f-strings `f""`)
 - Numeric literals (decimal, hex)
 - Attributes (`#[...]`)
+- Boolean literals (`true`, `false`)
 - Operators and braces
 
 #### `NoirTokenTypes.kt`
-Defines token element types for the lexer output.
+Defines token element types for the lexer output:
+- `KEYWORD`, `TYPE`, `IDENTIFIER`, `STRING`, `NUMBER`, `BOOLEAN`
+- `LINE_COMMENT`, `BLOCK_COMMENT`
+- `OPERATOR`, `BRACE`, `ATTRIBUTE`
+- `WHITESPACE`, `BAD_CHARACTER`
 
 #### `NoirSyntaxHighlighter.kt`
-Maps token types to IDE color scheme attributes using `DefaultLanguageHighlighterColors`.
+Maps token types to IDE color scheme attributes using `DefaultLanguageHighlighterColors`:
+- Keywords → `KEYWORD`
+- Types → `CLASS_NAME`
+- Strings → `STRING`
+- Numbers → `NUMBER`
+- Comments → `LINE_COMMENT`
+- Attributes → `METADATA`
 
 #### `NoirSyntaxHighlighterFactory.kt`
 Factory that provides the syntax highlighter for Noir files.
@@ -90,7 +105,6 @@ class NoirCommenter : Commenter {
 class NoirBraceMatcher : PairedBraceMatcher
 ```
 - Provides bracket matching for `{}`, `[]`, `()`
-- Currently empty implementation (relies on IDE defaults)
 
 ### LSP Integration
 
@@ -190,6 +204,39 @@ class NoirTemplateContextType : TemplateContextType("Noir") {
 - Defines when templates are available
 - Templates only show in `.nr` files
 
+### Gutter Icons
+
+#### `NoirTestLineMarkerProvider.kt`
+```kotlin
+class NoirTestLineMarkerProvider : LineMarkerProvider {
+    override fun getLineMarkerInfo(element: PsiElement): LineMarkerInfo<*>? {
+        // Detect #[test] attributes
+        // Return line marker with test icon
+    }
+}
+```
+- Provides gutter icons for test functions
+- Detects `#[test]` attributes in Noir files
+- Shows test icon in the gutter next to test functions
+- Registered as `codeInsight.lineMarkerProvider`
+
+### Stdlib Viewer
+
+#### `stdlib/NoirStdlibFileSystem.kt`
+```kotlin
+class NoirStdlibFileSystem : VirtualFileSystem() {
+    override fun getProtocol(): String = "noir-std"
+    override fun findFileByPath(path: String): VirtualFile? { ... }
+}
+```
+- Virtual file system for browsing Noir standard library
+- Implements `VirtualFileSystem` with `noir-std` protocol
+- Auto-detects stdlib location from nargo installation
+- Read-only access to stdlib source files
+
+#### `stdlib/NoirStdlibVirtualFile.kt`
+Virtual file implementation for stdlib files.
+
 ### Actions
 
 #### `actions/RestartLspAction.kt`
@@ -218,6 +265,18 @@ class ExpandMacrosAction : AnAction("Expand Macros") {
 - Shows expanded code in a read-only scratch file
 - Uses `ScratchRootType.getInstance().createScratchFile()`
 
+#### `actions/BrowseStdlibAction.kt`
+```kotlin
+class BrowseStdlibAction : AnAction("Browse Standard Library") {
+    override fun actionPerformed(e: AnActionEvent) {
+        // Find stdlib location
+        // Open lib.nr in editor
+    }
+}
+```
+- Opens the Noir standard library in the editor
+- Auto-detects stdlib location from nargo installation
+
 ### Icons
 
 #### `NoirIcons.kt`
@@ -233,7 +292,7 @@ object NoirIcons {
 - Dark background with red "N" letter
 
 #### `icons/test.svg`
-- Test tube icon (reserved for future gutter icons)
+- Test tube icon for test function gutter markers
 
 ### Plugin Configuration
 
@@ -245,10 +304,10 @@ Main plugin descriptor:
     <name>Noir</name>
 
     <depends>com.intellij.modules.platform</depends>
-    <depends optional="true" config-file="textmate.xml">org.jetbrains.plugins.textmate</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <!-- File type, commenter, settings, LSP, templates -->
+        <!-- File type, syntax highlighter, parser, commenter -->
+        <!-- Settings, LSP, templates, gutter icons, stdlib -->
     </extensions>
 
     <actions>
@@ -266,7 +325,6 @@ pluginName = Noir
 pluginVersion = 0.1.0
 pluginSinceBuild = 232          # IntelliJ 2023.2
 platformVersion = 2023.2
-platformBundledPlugins = org.jetbrains.plugins.textmate
 ```
 
 ### `build.gradle.kts`
@@ -293,6 +351,12 @@ intellijPlatform {
 ```
 This launches a sandbox IntelliJ IDEA with the plugin installed.
 
+### Running Tests
+```bash
+./gradlew test
+```
+Runs all unit tests including lexer, file type, and settings tests.
+
 ### Debugging
 1. Create a "Plugin" run configuration in IntelliJ
 2. Set breakpoints in your code
@@ -308,31 +372,33 @@ This launches a sandbox IntelliJ IDEA with the plugin installed.
 
 **LSP not starting**: Check that `nargo` is in PATH or configured in settings. Look for errors in IDE logs.
 
+**Syntax highlighting not working**: Ensure the file has `.nr` extension. Try reopening the file or restarting the IDE.
+
+## Testing
+
+### Test Files
+- `NoirFileTypeTest.kt` - Tests file type recognition and associations
+- `NoirLexerTest.kt` - Tests lexer tokenization for all token types
+- `NoirSettingsTest.kt` - Tests settings persistence and project overrides
+
+### Running Specific Tests
+```bash
+./gradlew test --tests "com.ohaddahan.noir.NoirLexerTest"
+```
+
 ## Future Improvements
 
-### Gutter Icons for Tests
-Annotator to show test icons:
-```kotlin
-class NoirTestAnnotator : Annotator {
-    override fun annotate(element: PsiElement, holder: AnnotationHolder) {
-        // Detect #[test] attribute
-        // Add gutter icon
-    }
-}
-```
-
-### Stdlib Viewer
-Virtual file system for `noir-std://` URIs:
-```kotlin
-class NoirStdlibFileSystem : VirtualFileSystem() {
-    // Provide read-only access to stdlib source
-}
-```
+### Potential Features
+- Run test action from gutter icon
+- Nargo.toml support (project configuration)
+- Code folding for functions, structs, modules
+- Structure view for file outline
+- Rename refactoring support
+- Custom color scheme options
 
 ## References
 
 - [IntelliJ Platform SDK](https://plugins.jetbrains.com/docs/intellij/)
 - [LSP API Documentation](https://plugins.jetbrains.com/docs/intellij/language-server-protocol.html)
-- [TextMate Bundles](https://plugins.jetbrains.com/docs/intellij/textmate.html)
 - [Noir Language](https://noir-lang.org/)
 - [VSCode Noir Extension](https://github.com/noir-lang/vscode-noir) (reference implementation)
