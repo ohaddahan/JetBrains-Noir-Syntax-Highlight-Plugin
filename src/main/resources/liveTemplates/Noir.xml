@@ -1,0 +1,99 @@
+<templateSet group="Noir">
+    <template name="mod" value="mod $NAME$;" description="Module declaration" toReformat="true" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="&quot;module_name&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="use" value="use $NAME$;" description="Use statement" toReformat="true" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="&quot;module::item&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="fn" value="fn $NAME$($PARAMS$) {&#10;    $END$&#10;}" description="Function declaration" toReformat="true" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="&quot;function_name&quot;" alwaysStopAt="true"/>
+        <variable name="PARAMS" expression="" defaultValue="" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="fnmain" value="fn main() {&#10;    $END$&#10;}" description="Main function" toReformat="true" toShortenFQNames="true">
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="struct" value="struct $NAME$ {&#10;    $END$&#10;}" description="Struct declaration" toReformat="true" toShortenFQNames="true">
+        <variable name="NAME" expression="" defaultValue="&quot;StructName&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="let" value="let $VAR$ = $END$;" description="Variable declaration" toReformat="true" toShortenFQNames="true">
+        <variable name="VAR" expression="" defaultValue="&quot;variable&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="letfor" value="let $ARRAY$ = for $START$..$END_RANGE$ {&#10;    $END$&#10;};" description="Array comprehension with for loop" toReformat="true" toShortenFQNames="true">
+        <variable name="ARRAY" expression="" defaultValue="&quot;array&quot;" alwaysStopAt="true"/>
+        <variable name="START" expression="" defaultValue="&quot;0&quot;" alwaysStopAt="true"/>
+        <variable name="END_RANGE" expression="" defaultValue="&quot;10&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="letforin" value="let $ARRAY$ = for $INDEX$ in $START$..$END_RANGE$ {&#10;    $END$&#10;};" description="Array comprehension with for-in loop" toReformat="true" toShortenFQNames="true">
+        <variable name="ARRAY" expression="" defaultValue="&quot;array&quot;" alwaysStopAt="true"/>
+        <variable name="INDEX" expression="" defaultValue="&quot;i&quot;" alwaysStopAt="true"/>
+        <variable name="START" expression="" defaultValue="&quot;0&quot;" alwaysStopAt="true"/>
+        <variable name="END_RANGE" expression="" defaultValue="&quot;10&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="for" value="for $START$..$END_RANGE$ {&#10;    $END$&#10;}" description="For loop" toReformat="true" toShortenFQNames="true">
+        <variable name="START" expression="" defaultValue="&quot;0&quot;" alwaysStopAt="true"/>
+        <variable name="END_RANGE" expression="" defaultValue="&quot;10&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="forin" value="for $INDEX$ in $START$..$END_RANGE$ {&#10;    $END$&#10;}" description="For-in loop" toReformat="true" toShortenFQNames="true">
+        <variable name="INDEX" expression="" defaultValue="&quot;i&quot;" alwaysStopAt="true"/>
+        <variable name="START" expression="" defaultValue="&quot;0&quot;" alwaysStopAt="true"/>
+        <variable name="END_RANGE" expression="" defaultValue="&quot;10&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="if" value="if $CONDITION$ {&#10;    $END$&#10;}" description="If statement" toReformat="true" toShortenFQNames="true">
+        <variable name="CONDITION" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="elseif" value="else if $CONDITION$ {&#10;    $END$&#10;}" description="Else-if statement" toReformat="true" toShortenFQNames="true">
+        <variable name="CONDITION" expression="" defaultValue="&quot;condition&quot;" alwaysStopAt="true"/>
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+
+    <template name="else" value="else {&#10;    $END$&#10;}" description="Else statement" toReformat="true" toShortenFQNames="true">
+        <context>
+            <option name="OTHER" value="true"/>
+        </context>
+    </template>
+</templateSet>

@@ -1,0 +1,91 @@
+<idea-plugin>
+    <id>cash.turbine.noir</id>
+    <name>Noir Language Support</name>
+    <vendor url="https://github.com/ZKLSOL">ZKLSOL</vendor>
+
+    <description><![CDATA[
+    Syntax highlighting and language server support for the Noir zero-knowledge programming language.
+
+    <h3>Features</h3>
+    <ul>
+        <li>Syntax highlighting for .nr files</li>
+        <li>LSP integration with nargo lsp</li>
+        <li>Code completion, diagnostics, and go-to-definition</li>
+        <li>Live templates for common Noir constructs</li>
+        <li>Macro expansion viewer</li>
+    </ul>
+    ]]></description>
+
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <fileType
+                name="Noir"
+                implementationClass="cash.turbine.noir.NoirFileType"
+                fieldName="INSTANCE"
+                language="Noir"
+                extensions="nr"/>
+
+        <lang.syntaxHighlighterFactory
+                language="Noir"
+                implementationClass="cash.turbine.noir.NoirSyntaxHighlighterFactory"/>
+
+        <lang.parserDefinition
+                language="Noir"
+                implementationClass="cash.turbine.noir.NoirParserDefinition"/>
+
+        <lang.commenter
+                language="Noir"
+                implementationClass="cash.turbine.noir.NoirCommenter"/>
+
+        <lang.braceMatcher
+                language="Noir"
+                implementationClass="cash.turbine.noir.NoirBraceMatcher"/>
+
+        <applicationConfigurable
+                parentId="language"
+                instance="cash.turbine.noir.settings.NoirSettingsConfigurable"
+                id="cash.turbine.noir.settings"
+                displayName="Noir"/>
+
+        <applicationService
+                serviceImplementation="cash.turbine.noir.settings.NoirSettings"/>
+
+        <projectService
+                serviceImplementation="cash.turbine.noir.settings.NoirProjectSettings"/>
+
+        <platform.lsp.serverSupportProvider
+                implementation="cash.turbine.noir.lsp.NoirLspServerSupportProvider"/>
+
+        <defaultLiveTemplates file="/liveTemplates/Noir.xml"/>
+        <liveTemplateContext
+                contextId="NOIR"
+                implementation="cash.turbine.noir.NoirTemplateContextType"/>
+
+        <codeInsight.lineMarkerProvider
+                language="Noir"
+                implementationClass="cash.turbine.noir.NoirTestLineMarkerProvider"/>
+
+        <virtualFileSystem
+                key="noir-std"
+                implementationClass="cash.turbine.noir.stdlib.NoirStdlibFileSystem"/>
+    </extensions>
+
+    <actions>
+        <group id="Noir.ToolsMenu" text="Noir" popup="true">
+            <add-to-group group-id="ToolsMenu" anchor="last"/>
+            <action id="Noir.RestartLsp"
+                    class="cash.turbine.noir.actions.RestartLspAction"
+                    text="Restart Language Server"
+                    description="Restart the Noir language server"/>
+            <action id="Noir.ExpandMacros"
+                    class="cash.turbine.noir.actions.ExpandMacrosAction"
+                    text="Expand Macros"
+                    description="Expand macros in current Noir file"/>
+            <action id="Noir.BrowseStdlib"
+                    class="cash.turbine.noir.actions.BrowseStdlibAction"
+                    text="Browse Standard Library"
+                    description="Open Noir standard library source"/>
+        </group>
+    </actions>
+</idea-plugin>
