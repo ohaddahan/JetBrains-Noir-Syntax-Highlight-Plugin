@@ -1,4 +1,5 @@
-# [Extended Docs](noir-jetbrains-plugin-docs.turbine.cash)
+# [Extended Docs](https://noir-jetbrains-plugin-docs.turbine.cash)
+# [JetBrains Plugin Page](https://plugins.jetbrains.com/plugin/29753-noir-language-support)
 
 # Noir JetBrains Plugin
 
